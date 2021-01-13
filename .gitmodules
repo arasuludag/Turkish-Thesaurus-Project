@@ -1,0 +1,3 @@
+[submodule "client"]
+	path = client
+	url = https://github.com/arasuludag/Turkish-Thesaurus-Project-Client-Side.git
