@@ -5,8 +5,9 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
-const app = express();
 const cors = require("cors");
+const fs = require("fs");
+const app = express();
 const port = 5000;
 
 //Public folder usage and bodyParser.
@@ -20,7 +21,7 @@ app.use(bodyParser.json());
 
 app.use(cors());
 
-// For the cookies, user and password salt & hash.
+// For the session.
 app.use(
   session({
     secret: "process.env.SECRET",
@@ -125,12 +126,15 @@ app.post("/api/word", (req, res) => {
 });
 
 app.post("/api/word-suggestions", (req, res) => {
-  Word.find({ word: { $regex: req.body.searchedWord.word, $options: "i" } }, function (err, foundWord) {
-    if (err) console.log(err);
-    else {
-      res.send(foundWord);
+  Word.find(
+    { word: { $regex: req.body.searchedWord.word, $options: "i" } },
+    function (err, foundWord) {
+      if (err) console.log(err);
+      else {
+        res.send(foundWord);
+      }
     }
-  });
+  );
 });
 
 app.post("/api/tabs", (req, res) => {
@@ -156,33 +160,72 @@ app.post("/api/tabs", (req, res) => {
 
 app.post("/api/add-word", (req, res) => {
   if (req.isAuthenticated()) {
-    User.findById(req.user.id, function (err, foundUser) {
+    Tab.create(
+      {
+        name: "Genel",
+        whoCreated: req.user._id,
+      },
+      function (err, tab) {
+        if (err) console.log(err);
+        else {
+          tab.save();
+
+          Word.create(
+            {
+              word: req.body.word,
+              whoCreated: req.user._id,
+            },
+            function (err, word) {
+              if (err) console.log(err);
+              else {
+                word.tabs.push(tab._id);
+                word.save();
+                res.status(200).send("OK");
+              }
+            }
+          );
+        }
+      }
+    );
+  }
+});
+
+app.post("/api/add-word-to-word", (req, res) => {
+  if (req.isAuthenticated()) {
+    Tab.findById(req.body.addedWord.tab, function (err, tab) {
+      if (err) console.log(err);
+      else {
+        if (req.body.addedWord.relation === "thesaurus")
+          tab.thesaurus.push(req.body.addedWord.word);
+        if (req.body.addedWord.relation === "similar")
+          tab.similar.push(req.body.addedWord.word);
+        if (req.body.addedWord.relation === "antonymous")
+          tab.antonymous.push(req.body.addedWord.word);
+
+        tab.save();
+        res.status(200).send("OK");
+      }
+    });
+  }
+});
+
+app.post("/api/add-tab", (req, res) => {
+  if (req.isAuthenticated()) {
+    Word.findById(req.body.addedTab.wordId, function (err, foundWord) {
       if (err) console.log(err);
       else {
         Tab.create(
           {
-            name: "Genel",
-            whoCreated: foundUser._id,
+            name: req.body.addedTab.tabName,
+            whoCreated: req.user._id,
           },
           function (err, tab) {
             if (err) console.log(err);
             else {
               tab.save();
-
-              Word.create(
-                {
-                  word: word,
-                  whoCreated: foundUser._id,
-                },
-                function (err, word) {
-                  if (err) console.log(err);
-                  else {
-                    word.tabs.push(tab._id);
-                    word.save();
-                    res.status(200).send("OK");
-                  }
-                }
-              );
+              foundWord.tabs.push(tab._id);
+              foundWord.save();
+              res.status(200).send("OK");
             }
           }
         );
@@ -191,88 +234,29 @@ app.post("/api/add-word", (req, res) => {
   }
 });
 
-app.post("/api/add-word-to-word", (req, res) => {
-  if (req.isAuthenticated()) {
-    User.findById(req.user.id, function (err, foundUser) {
-      if (err) console.log(err);
-      else {
-        Tab.findById(req.body.addedWord.tab, function (err, tab) {
-          if (err) console.log(err);
-          else {
-            if (req.body.addedWord.relation === "thesaurus")
-              tab.thesaurus.push(req.body.addedWord.word);
-            if (req.body.addedWord.relation === "similar")
-              tab.similar.push(req.body.addedWord.word);
-            if (req.body.addedWord.relation === "antonymous")
-              tab.antonymous.push(req.body.addedWord.word);
-
-            tab.save();
-            res.status(200).send("OK");
-          }
-        });
-      }
-    });
-  }
-});
-
-app.post("/api/add-tab", (req, res) => {
-  if (req.isAuthenticated()) {
-    User.findById(req.user.id, function (err, foundUser) {
-      if (err) console.log(err);
-      else {
-        Word.findById(req.body.addedTab.wordId, function (err, foundWord) {
-          if (err) console.log(err);
-          else {
-            Tab.create(
-              {
-                name: req.body.addedTab.tabName,
-                whoCreated: foundUser._id,
-              },
-              function (err, tab) {
-                if (err) console.log(err);
-                else {
-                  tab.save();
-                  foundWord.tabs.push(tab._id);
-                  foundWord.save();
-                  res.status(200).send("OK");
-                }
-              }
-            );
-          }
-        });
-      }
-    });
-  }
-});
-
 app.post("/api/delete-word", (req, res) => {
   if (req.isAuthenticated()) {
-    User.findById(req.user.id, function (err, foundUser) {
+    Tab.findById(req.body.deletedWord.tab, function (err, tab) {
       if (err) console.log(err);
       else {
-        Tab.findById(req.body.deletedWord.tab, function (err, tab) {
-          if (err) console.log(err);
-          else {
-            for (var i = 0; i < tab.thesaurus.length; i++) {
-              if (tab.thesaurus[i] === req.body.deletedWord.word) {
-                tab.thesaurus.splice(i, 1);
-              }
-            }
-            for (var i = 0; i < tab.similar.length; i++) {
-              if (tab.similar[i] === req.body.deletedWord.word) {
-                tab.similar.splice(i, 1);
-              }
-            }
-            for (var i = 0; i < tab.antonymous.length; i++) {
-              if (tab.antonymous[i] === req.body.deletedWord.word) {
-                tab.antonymous.splice(i, 1);
-              }
-            }
-
-            tab.save();
-            res.status(200).send("OK");
+        for (var i = 0; i < tab.thesaurus.length; i++) {
+          if (tab.thesaurus[i] === req.body.deletedWord.word) {
+            tab.thesaurus.splice(i, 1);
           }
-        });
+        }
+        for (var i = 0; i < tab.similar.length; i++) {
+          if (tab.similar[i] === req.body.deletedWord.word) {
+            tab.similar.splice(i, 1);
+          }
+        }
+        for (var i = 0; i < tab.antonymous.length; i++) {
+          if (tab.antonymous[i] === req.body.deletedWord.word) {
+            tab.antonymous.splice(i, 1);
+          }
+        }
+
+        tab.save();
+        res.status(200).send("OK");
       }
     });
   }
@@ -280,15 +264,10 @@ app.post("/api/delete-word", (req, res) => {
 
 app.post("/api/delete-tab", (req, res) => {
   if (req.isAuthenticated()) {
-    User.findById(req.user.id, function (err, foundUser) {
+    Tab.findByIdAndDelete(req.body.tabId, function (err) {
       if (err) console.log(err);
       else {
-        Tab.findByIdAndDelete(req.body.tabId, function (err) {
-          if (err) console.log(err);
-          else {
-            res.status(200).send("OK");
-          }
-        });
+        res.status(200).send("OK");
       }
     });
   }
@@ -296,15 +275,10 @@ app.post("/api/delete-tab", (req, res) => {
 
 app.post("/api/delete-searchable-word", (req, res) => {
   if (req.isAuthenticated()) {
-    User.findById(req.user.id, function (err, foundUser) {
+    Word.findOneAndDelete({ word: req.body.word }, function (err) {
       if (err) console.log(err);
       else {
-        Word.findOneAndDelete({ word: req.body.word }, function (err) {
-          if (err) console.log(err);
-          else {
-            res.status(200).send("OK");
-          }
-        });
+        res.status(200).send("OK");
       }
     });
   }
@@ -358,14 +332,11 @@ app.post("/api/generated-words", (req, res) => {
       Promise.all(wordsT).then(() => {
         Promise.all(wordsS).then(() => {
           Promise.all(wordsA).then(() => {
-
             var generated = {
               thesaurus: generatedThesaurus,
               similar: generatedSimilar,
               antonymous: generatedAntonymous,
             };
-
-            console.log(generated);
 
             res.send(generated);
           });
@@ -375,33 +346,29 @@ app.post("/api/generated-words", (req, res) => {
   });
 });
 
+app.post("/api/get-sample-usage", (req, res) => {
+  fs.readFile("./AtasozleriDeyimler.json", "utf8", (err, readFile) => {
+    if (err) console.log("File read failed:", err);
+    else {
+      var results = [];
+      var searchField = "Soz";
+      var searchVal = " " + req.body.word.toLowerCase();
+      var theJSON = JSON.parse(readFile);
 
-//
-// app.get('/api/get-tasks', (req, res) => {
-//   if (req.isAuthenticated()) {
-//
-//     User.findById(req.user.id, function(err, foundUser) {
-//       if (err) console.log(err);
-//
-//       Task.find({
-//         translator: foundUser._id
-//       }, function(err, foundTask) {
-//         if (err) console.log(err);
-//         else { res.status(200).send(foundTask);}
-//     });
-// });
-//   }
-// })
-//
-// var taskId;
-// app.post('/api/display-task', (req, res) => {
-// if (req.isAuthenticated()) {
-//
-//   taskId = req.body.task.taskId;
-//   res.status(200).send('OK');
-//
-// }
-// });
+      const jsonSearch = theJSON.map(async (json) => {
+        if (json[searchField].includes(searchVal)) {
+          results.push(json);
+        }
+      });
+
+      Promise.all(jsonSearch).then(() => {
+        console.log(results);
+
+        res.send(results);
+      });
+    }
+  });
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
