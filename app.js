@@ -10,8 +10,6 @@ const fs = require("fs");
 const app = express();
 const port = 5000;
 
-//Public folder usage and bodyParser.
-app.use(express.static(__dirname + "/public")); // This was more relevant with EJS. I just left it as it is.
 app.use(
   bodyParser.urlencoded({
     extended: true,
@@ -24,7 +22,7 @@ app.use(cors());
 // For the session.
 app.use(
   session({
-    secret: "process.env.SECRET",
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
   })
@@ -51,7 +49,7 @@ const userSchema = new mongoose.Schema({
 //Create Word Model
 const wordSchema = new mongoose.Schema({
   word: String,
-  tabs: Array,
+  tabs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tab" }],
   whoCreated: String,
 });
 
@@ -65,14 +63,21 @@ const tabSchema = new mongoose.Schema({
 });
 
 // Bind userSchema to passport for login.
-userSchema.plugin(passportLocalMongoose);
+userSchema.plugin(passportLocalMongoose, {
+  limitAttempts: true,
+  interval: 1000,
+});
 
 const User = mongoose.model("User", userSchema);
 const Word = mongoose.model("Word", wordSchema);
 const Tab = mongoose.model("Tab", tabSchema);
 
-// More boilerplate for passport. (User login)
+module.exports = mongoose.model("User", userSchema);
+
+// use static authenticate method of model in LocalStrategy
 passport.use(User.createStrategy());
+
+// use static serialize and deserialize of model for passport session support
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
@@ -82,37 +87,29 @@ app.get("/api/current_user", (req, res) => {
 });
 
 app.post("/api/register", (req, res) => {
-  User.register(
-    {
-      name: req.body.user.name,
-      isEditor: false,
-      username: req.body.user.username,
-    },
-    req.body.user.password,
-    function (err, user) {
-      if (err) {
-        console.log(err);
-      } else {
-        res.status(200).send("OK");
+  if (req.body.user.code === process.env.REGISTERCODE) {
+    User.register(
+      {
+        name: req.body.user.name,
+        isEditor: false,
+        username: req.body.user.username,
+      },
+      req.body.user.password,
+      function (err, user) {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send("OK");
+        }
       }
-    }
-  );
+    );
+  } else res.status(406);
 });
 
-app.post("/api/login", (req, res) => {
-  const user = new User({
-    username: req.body.user.username,
-    password: req.body.user.password,
-  });
-
-  req.logIn(user, function (err) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.status(200).send("OK");
-    }
-  });
-});
+app.post(
+  "/api/login",
+  passport.authenticate("local", { successRedirect: "/" })
+);
 
 app.post("/api/word", (req, res) => {
   Word.findOne({ word: req.body.word }, function (err, foundWord) {
@@ -134,7 +131,7 @@ app.post("/api/word-suggestions", (req, res) => {
     else {
       res.send(foundWord);
     }
-  }).limit(10);
+  }).limit(7);
 });
 
 app.post("/api/tabs", (req, res) => {
@@ -275,10 +272,17 @@ app.post("/api/delete-tab", (req, res) => {
 
 app.post("/api/delete-searchable-word", (req, res) => {
   if (req.isAuthenticated() && req.user.isEditor) {
-    Word.findOneAndDelete({ word: req.body.word }, function (err) {
+    Word.findOne({ word: req.body.word }, function (err, foundWord) {
       if (err) console.log(err);
       else {
-        res.status(200).send("OK");
+        const query = foundWord.tabs.map(async (tab) => {
+          deleteTab = await Tab.findByIdAndDelete(tab._id).exec();
+        });
+
+        Promise.all(query).then(async () => {
+          deleteWord = await Word.findByIdAndDelete(foundWord._id).exec();
+          res.status(200).send("OK");
+        });
       }
     });
   }
@@ -377,8 +381,6 @@ app.post("/api/get-sample-usage", (req, res) => {
       });
 
       Promise.all(jsonSearch).then(() => {
-        console.log(results);
-
         res.send(results);
       });
     }
