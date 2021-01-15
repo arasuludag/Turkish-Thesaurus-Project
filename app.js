@@ -85,7 +85,7 @@ app.post("/api/register", (req, res) => {
   User.register(
     {
       name: req.body.user.name,
-      isEditor: true,
+      isEditor: false,
       username: req.body.user.username,
     },
     req.body.user.password,
@@ -115,7 +115,7 @@ app.post("/api/login", (req, res) => {
 });
 
 app.post("/api/word", (req, res) => {
-  Word.findOne({ word: req.body.searchedWord.word }, function (err, foundWord) {
+  Word.findOne({ word: req.body.word }, function (err, foundWord) {
     if (err) console.log(err);
     else if (foundWord === null) {
       res.send("Nope");
@@ -126,15 +126,15 @@ app.post("/api/word", (req, res) => {
 });
 
 app.post("/api/word-suggestions", (req, res) => {
-  Word.find(
-    { word: { $regex: req.body.searchedWord.word, $options: "i" } },
-    function (err, foundWord) {
-      if (err) console.log(err);
-      else {
-        res.send(foundWord);
-      }
+  Word.find({ word: { $regex: req.body.word, $options: "si" } }, function (
+    err,
+    foundWord
+  ) {
+    if (err) console.log(err);
+    else {
+      res.send(foundWord);
     }
-  );
+  }).limit(10);
 });
 
 app.post("/api/tabs", (req, res) => {
@@ -159,7 +159,7 @@ app.post("/api/tabs", (req, res) => {
 });
 
 app.post("/api/add-word", (req, res) => {
-  if (req.isAuthenticated()) {
+  if (req.isAuthenticated() && req.user.isEditor) {
     Tab.create(
       {
         name: "Genel",
@@ -191,7 +191,7 @@ app.post("/api/add-word", (req, res) => {
 });
 
 app.post("/api/add-word-to-word", (req, res) => {
-  if (req.isAuthenticated()) {
+  if (req.isAuthenticated() && req.user.isEditor) {
     Tab.findById(req.body.addedWord.tab, function (err, tab) {
       if (err) console.log(err);
       else {
@@ -210,7 +210,7 @@ app.post("/api/add-word-to-word", (req, res) => {
 });
 
 app.post("/api/add-tab", (req, res) => {
-  if (req.isAuthenticated()) {
+  if (req.isAuthenticated() && req.user.isEditor) {
     Word.findById(req.body.addedTab.wordId, function (err, foundWord) {
       if (err) console.log(err);
       else {
@@ -235,7 +235,7 @@ app.post("/api/add-tab", (req, res) => {
 });
 
 app.post("/api/delete-word", (req, res) => {
-  if (req.isAuthenticated()) {
+  if (req.isAuthenticated() && req.user.isEditor) {
     Tab.findById(req.body.deletedWord.tab, function (err, tab) {
       if (err) console.log(err);
       else {
@@ -263,7 +263,7 @@ app.post("/api/delete-word", (req, res) => {
 });
 
 app.post("/api/delete-tab", (req, res) => {
-  if (req.isAuthenticated()) {
+  if (req.isAuthenticated() && req.user.isEditor) {
     Tab.findByIdAndDelete(req.body.tabId, function (err) {
       if (err) console.log(err);
       else {
@@ -274,13 +274,28 @@ app.post("/api/delete-tab", (req, res) => {
 });
 
 app.post("/api/delete-searchable-word", (req, res) => {
-  if (req.isAuthenticated()) {
+  if (req.isAuthenticated() && req.user.isEditor) {
     Word.findOneAndDelete({ word: req.body.word }, function (err) {
       if (err) console.log(err);
       else {
         res.status(200).send("OK");
       }
     });
+  }
+});
+
+app.post("/api/make-editor", (req, res) => {
+  if (req.isAuthenticated() && req.user.isEditor) {
+    User.findOneAndUpdate(
+      { username: req.body.email },
+      { isEditor: true },
+      function (err, foundUser) {
+        if (err) console.log(err);
+        else {
+          res.send("OK");
+        }
+      }
+    );
   }
 });
 
@@ -347,7 +362,7 @@ app.post("/api/generated-words", (req, res) => {
 });
 
 app.post("/api/get-sample-usage", (req, res) => {
-  fs.readFile("./AtasozleriDeyimler.json", "utf8", (err, readFile) => {
+  fs.readFile("./AD.json", "utf8", (err, readFile) => {
     if (err) console.log("File read failed:", err);
     else {
       var results = [];
