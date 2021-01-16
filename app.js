@@ -274,6 +274,7 @@ app.post("/api/delete-searchable-word", (req, res) => {
   if (req.isAuthenticated() && req.user.isEditor) {
     Word.findOne({ word: req.body.word }, function (err, foundWord) {
       if (err) console.log(err);
+      if (foundWord === null) res.status(404);
       else {
         const query = foundWord.tabs.map(async (tab) => {
           deleteTab = await Tab.findByIdAndDelete(tab._id).exec();
@@ -386,6 +387,16 @@ app.post("/api/get-sample-usage", (req, res) => {
     }
   });
 });
+
+if (process.env.NODE_ENV === "production") {
+  // If we're on production, not developement.
+  app.use(express.static("client/build")); // Look for a path inside this.
+
+  const path = require("path");
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
