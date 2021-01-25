@@ -112,13 +112,16 @@ app.post(
 );
 
 app.post("/api/word", (req, res) => {
-  Word.findOne({ word: req.body.word }, function (err, foundWord) {
+  Word.
+  findOne({ word: req.body.word }).
+  populate('tabs').
+  exec(function (err, foundWord) {
     if (err) console.log(err);
-    else if (foundWord === null) {
-      res.send("Nope");
-    } else {
-      res.send(foundWord);
-    }
+      else if (foundWord === null) {
+        res.send("Nope");
+      } else {
+        res.send(foundWord);
+      }
   });
 });
 
