@@ -5,10 +5,16 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
+
+const { SitemapStream, streamToPromise } = require("sitemap");
+const { createGzip } = require("zlib");
+const { Readable } = require("stream");
+
 const cors = require("cors");
 const fs = require("fs");
 const app = express();
 const port = 5000;
+let sitemap;
 
 app.use(
   bodyParser.urlencoded({
@@ -112,17 +118,16 @@ app.post(
 );
 
 app.post("/api/word", (req, res) => {
-  Word.
-  findOne({ word: req.body.word }).
-  populate('tabs').
-  exec(function (err, foundWord) {
-    if (err) console.log(err);
+  Word.findOne({ word: req.body.word })
+    .populate("tabs")
+    .exec(function (err, foundWord) {
+      if (err) console.log(err);
       else if (foundWord === null) {
         res.send("Nope");
       } else {
         res.send(foundWord);
       }
-  });
+    });
 });
 
 app.post("/api/word-suggestions", (req, res) => {
@@ -389,6 +394,53 @@ app.post("/api/get-sample-usage", (req, res) => {
       });
     }
   });
+});
+
+app.get("/sitemap.xml", async function (req, res) {
+  res.header("Content-Type", "application/xml");
+  res.header("Content-Encoding", "gzip");
+  // if we have a cached entry send it
+  if (sitemap) {
+    res.send(sitemap);
+    return;
+  }
+
+  try {
+const smStream = new SitemapStream({ hostname: "http://localhost:5000" });
+const pipeline = smStream.pipe(createGzip());
+
+smStream.write({
+  url: "/",
+  priority: 0.8,
+});
+
+const foundWord = await Word.find({}).exec();
+
+theMapping = foundWord.map((word) => {
+  // pipe your entries or directly write them.
+  smStream.write({
+    url: "/ara/" + word.word,
+    changefreq: "monthly",
+    priority: 0.3,
+  });
+});
+
+Promise.all(theMapping).then(() => {
+  // cache the response
+  streamToPromise(pipeline).then((sm) => (sitemap = sm));
+  // make sure to attach a write stream such as streamToPromise before ending
+  smStream.end();
+  // stream write the response
+  pipeline.pipe(res).on("error", (e) => {
+    throw e;
+  });
+});
+
+
+  } catch (e) {
+    console.error(e);
+    res.status(500).end();
+  }
 });
 
 if (process.env.NODE_ENV === "production") {
