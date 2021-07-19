@@ -1,0 +1,98 @@
+body {
+  background-color: #1c1d26;
+  color: #f2f2f2;
+}
+
+.smoothbackground {
+  border-radius: 10px !important;
+  padding: 20px !important;
+  margin-top: 20px !important;
+  margin-right: 10px !important;
+  margin-left: 10px !important;
+  background-color: #222831 !important;
+}
+
+.MuiFormLabel-root {
+  color: #f2f2f2 !important;
+}
+
+label {
+  color: #eeeeee;
+}
+
+.Squezer {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+}
+
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+input,
+li,
+p {
+  color: #eeeeee !important;
+  font-family: "Raleway", sans-serif;
+  font-weight: 400;
+}
+
+h6 {
+  display: inline;
+}
+
+.budgetButton {
+  margin-bottom: 30px;
+  margin-right: 10px;
+}
+
+.btn-large {
+  border-radius: 33px !important;
+}
+
+.align-right-button {
+  position: absolute !important;
+  right: 5%;
+}
+
+.collection {
+  border: 0 !important;
+}
+
+.collection-item {
+  background-color: transparent !important;
+  line-height: 2.3rem !important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0;
+  /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  /* Firefox */
+}
+
+.MuiButton-root {
+  font-family: "Raleway", sans-serif !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+}
+
+.MuiAutocomplete-loading {
+  color: #d0c212 !important;
+}
