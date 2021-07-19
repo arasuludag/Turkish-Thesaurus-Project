@@ -38,7 +38,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // MongoDB stuff.
-mongoose.connect("mongodb://localhost:27017/ThesaurusDB", {
+mongoose.connect(process.env.MONGO, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -94,10 +94,14 @@ app.get("/api/current_user", (req, res) => {
 
 app.post("/api/register", (req, res) => {
   if (req.body.user.code === process.env.REGISTERCODE) {
+
+    var isEditor = false;
+    if (process.env.ADMIN === req.body.user.username) isEditor = true;
+
     User.register(
       {
         name: req.body.user.name,
-        isEditor: false,
+        isEditor: isEditor,
         username: req.body.user.username,
       },
       req.body.user.password,
@@ -406,7 +410,7 @@ app.get("/sitemap.xml", async function (req, res) {
   }
 
   try {
-const smStream = new SitemapStream({ hostname: "http://localhost:5000" });
+const smStream = new SitemapStream({ hostname: "https://tresaurus.app" });
 const pipeline = smStream.pipe(createGzip());
 
 smStream.write({
