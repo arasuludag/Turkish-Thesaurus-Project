@@ -52,7 +52,7 @@ function SearchResult(props) {
   }
 
   return (
-    <Grid item xs={12} lg={6}>
+    <Grid item xs={12} lg={7}>
       {checkData()}
     </Grid>
   );

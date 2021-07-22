@@ -277,7 +277,9 @@ export default function CustomizedTabs(props) {
 
   function TabsThemselves() {
     return props.tabData.map((tab, index) => {
-      return <StyledTab key={index} label={tab.name} />;
+      if (tab.clause) var label = "("+tab.clause+")" + " " + tab.name;
+      else var label = tab.name;
+      return <StyledTab key={index} label={label} />;
     });
   }
 

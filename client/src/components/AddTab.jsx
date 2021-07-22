@@ -35,6 +35,7 @@ function FormDialog(props) {
   };
 
   const [tabName, setTabName] = useState("");
+  const [tabClause, setTabClause] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -42,6 +43,7 @@ function FormDialog(props) {
     const addedTab = {
       wordId: props.wordData._id,
       tabName: tabName,
+      tabClause: tabClause,
     };
 
     axios.post("/api/add-tab", { addedTab }).then((res) => {
@@ -49,8 +51,11 @@ function FormDialog(props) {
     });
   };
 
-  const handleChange = (event) => {
+  const handleTabNameChange = (event) => {
     setTabName(event.target.value);
+  };
+  const handleTabClauseChange = (event) => {
+    setTabClause(event.target.value);
   };
 
   return (
@@ -72,7 +77,8 @@ function FormDialog(props) {
         <DialogTitle id="form-dialog-title">Sekme Ekle</DialogTitle>
         <DialogContent>
           <p>Aynı kelimeye var olan bir isimle sekme eklememeye dikkat.</p>
-          <Input type="text" onChange={handleChange} label="Yaz" />
+          <Input type="text" onChange={handleTabClauseChange} label="Clause" />
+          <Input type="text" onChange={handleTabNameChange} label="Sekme Adı" />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="secondary">

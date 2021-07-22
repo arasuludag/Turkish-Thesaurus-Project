@@ -28,7 +28,7 @@ function Home() {
   return (
     <div className="App">
       <Grid container direction="row" justify="center" alignItems="flex-start">
-        <Grid item xs={12} lg={5}>
+        <Grid item xs={12} lg={7}>
           <Paper elevation={3} className={classes.root}>
             <Grid
               container

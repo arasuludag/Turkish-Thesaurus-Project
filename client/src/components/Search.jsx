@@ -31,8 +31,7 @@ function Search(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const wordCapitalized = word.charAt(0).toUpperCase() + word.slice(1);
-    history.push("/ara/" + wordCapitalized);
+    history.push("/ara/" + word);
   };
 
   return (

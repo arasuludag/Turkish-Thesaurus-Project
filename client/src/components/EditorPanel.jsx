@@ -9,6 +9,7 @@ import DeleteWord from "./DeleteWord.jsx";
 import DeleteTab from "./DeleteTab.jsx";
 import DeleteSearchableWord from "./DeleteSearchableWord.jsx";
 import MakeEditor from "./MakeEditor.jsx";
+import WordOrderChange from "./WordOrderChange.jsx";
 
 function EditorPanel(props) {
   const [data, setData] = useState("");
@@ -24,6 +25,7 @@ function EditorPanel(props) {
     return (
       <Grid container direction="row" justify="center" alignItems="flex-end">
         <AddWordtoWord tabData={props.tabData} index={props.value} />
+        <WordOrderChange tabData={props.tabData} />
         <AddTab wordData={props.wordData} />
         <DeleteWord tabData={props.tabData} />
         <DeleteTab tabData={props.tabData} wordData={props.wordData} />

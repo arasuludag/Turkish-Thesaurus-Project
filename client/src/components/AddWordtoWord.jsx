@@ -41,10 +41,8 @@ function FormDialog(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const wordCapitalized = word.charAt(0).toUpperCase() + word.slice(1);
-
     const addedWord = {
-      word: wordCapitalized,
+      word: word,
       relation: radio,
       tab: props.tabData[props.index]._id,
     };

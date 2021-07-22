@@ -9,6 +9,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import {withStyles} from "@material-ui/core/styles";
 
+import Input from "./Input.jsx";
 import RadioDeleteButton from "./RadioDeleteButton.jsx";
 import Snackbar from "./Snackbar.jsx";
 
@@ -24,6 +25,8 @@ function FormDialog(props) {
   const [tabId, setTabId] = useState("");
   const [word, setWord] = useState("");
   const [snackbar, setSnackbar] = useState(false);
+  const [order, setOrder] = useState("");
+  const [type, setType] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -39,16 +42,22 @@ function FormDialog(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const deletedWord = {
+    const changedWord = {
       word: word,
-      tab: tabId
+      tab: tabId,
+      type: type,
+      order: order
     };
 
-    if (deletedWord.word !== "") {
-      axios.post("/api/delete-word", {deletedWord}).then((res) => {
+    if (changedWord.word !== "" && changedWord.order !== "") {
+      axios.post("/api/change-word-order", {changedWord}).then((res) => {
         setSnackbar(true);
       });
     }
+  };
+
+  const handleOrder = (event) => {
+    setOrder(event.target.value);
   };
 
   return (<div>
@@ -58,22 +67,24 @@ function FormDialog(props) {
         borderRadius: "33px",
         marginTop: "15px"
       }}>
-      Kelime Sil
+      Kelime Sırası Değiştir
     </Button>
     <CustomDialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">Kelime Sil</DialogTitle>
+      <DialogTitle id="form-dialog-title">Kelime Sırası Değiştir</DialogTitle>
       <DialogContent>
         <RadioDeleteButton tabData={props.tabData} deleteThis={(word, type, tabId) => {
             setWord(word);
+            setType(type);
             setTabId(tabId);
           }}/>
+        <Input type="number" onChange={handleOrder} label="Sıra (1,2,3...)"/>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="secondary">
           İptal
         </Button>
         <Button onClick={handleSubmit} color="secondary">
-          Sil Gitsin
+          Değiştir
         </Button>
       </DialogActions>
     </CustomDialog>
