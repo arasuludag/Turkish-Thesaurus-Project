@@ -109,13 +109,14 @@ export default function CustomizedTabs(props) {
     if (props.genWords.thesaurus === undefined || index !== 0) return null;
     else
       return props.genWords.thesaurus.map((word) => {
-        var dublicate = false;
+        var duplicate = false;
         props.tabData[index].thesaurus.map((enteredWord) => {
           if (enteredWord === word) {
-            return (dublicate = true);
+            duplicate = true;
           }
+          return duplicate;
         });
-        if (dublicate) return null;
+        if (duplicate) return null;
         else
           return (
             <Button
@@ -167,13 +168,14 @@ export default function CustomizedTabs(props) {
     if (props.genWords.similar === undefined || index !== 0) return null;
     else
       return props.genWords.similar.map((word) => {
-        var dublicate = false;
+        var duplicate = false;
         props.tabData[index].similar.map((enteredWord) => {
           if (enteredWord === word) {
-            return (dublicate = true);
+            duplicate = true;
           }
+          return duplicate;
         });
-        if (dublicate) return null;
+        if (duplicate) return null;
         else
           return (
             <Button
@@ -225,13 +227,14 @@ export default function CustomizedTabs(props) {
     if (props.genWords.antonymous === undefined || index !== 0) return null;
     else
       return props.genWords.antonymous.map((word) => {
-        var dublicate = false;
+        var duplicate = false;
         props.tabData[index].antonymous.map((enteredWord) => {
           if (enteredWord === word) {
-            return (dublicate = true);
+            duplicate = true;
           }
+          return duplicate;
         });
-        if (dublicate) return null;
+        if (duplicate) return null;
         else
           return (
             <Button
@@ -257,6 +260,7 @@ export default function CustomizedTabs(props) {
 
   const history = useHistory();
   const handleSubmit = (word) => {
+    setValue(0);
     history.push("/ara/" + word);
   };
 
@@ -277,8 +281,9 @@ export default function CustomizedTabs(props) {
 
   function TabsThemselves() {
     return props.tabData.map((tab, index) => {
-      if (tab.clause) var label = "("+tab.clause+")" + " " + tab.name;
-      else var label = tab.name;
+      var label;
+      if (tab.clause) label = `(${tab.clause}) ${tab.name}`;
+      else label = tab.name;
       return <StyledTab key={index} label={label} />;
     });
   }

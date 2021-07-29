@@ -9,7 +9,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import {withStyles} from "@material-ui/core/styles";
 
-import RadioDeleteButton from "./RadioDeleteButton.jsx";
+import ListWordsRadioButton from "./ListWordsRadioButton.jsx";
 import Snackbar from "./Snackbar.jsx";
 
 const CustomDialog = withStyles({
@@ -63,7 +63,7 @@ function FormDialog(props) {
     <CustomDialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">Kelime Sil</DialogTitle>
       <DialogContent>
-        <RadioDeleteButton tabData={props.tabData} deleteThis={(word, type, tabId) => {
+        <ListWordsRadioButton tabData={props.tabData} deleteThis={(word, type, tabId) => {
             setWord(word);
             setTabId(tabId);
           }}/>

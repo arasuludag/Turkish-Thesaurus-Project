@@ -26,7 +26,7 @@ function Home() {
   const [word, setWord] = useState("");
 
   return (
-    <div className="App">
+    <div className="Squezer">
       <Grid container direction="row" justify="center" alignItems="flex-start">
         <Grid item xs={12} lg={7}>
           <Paper elevation={3} className={classes.root}>

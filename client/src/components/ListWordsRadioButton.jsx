@@ -12,19 +12,19 @@ export default function RadioButtonsGroup(props) {
 
   function listThesaurusWords(tab) {
     if (tab.thesaurus === undefined || tab.thesaurus === "")
-      return (<h1></h1>);
+      return null;
     else
-      return tab.thesaurus.map((thesaurusWord) => {
-        return (<FormControlLabel value={thesaurusWord} control={<Radio />} label={thesaurusWord} onChange={e => onSelect(thesaurusWord, "Thesaurus", tab._id)}/>);
+      return tab.thesaurus.map((thesaurusWord, i) => {
+        return (<FormControlLabel value={thesaurusWord} control={<Radio />} label={i+1 + '. ' + thesaurusWord} onChange={e => onSelect(thesaurusWord, "Thesaurus", tab._id)}/>);
       });
     }
 
   function listSimilarWords(tab) {
     if (tab.similar === undefined || tab.similar === "")
-      return (<h1></h1>);
+      return null;
     else
-      return tab.similar.map((similarWord) => {
-        return (<FormControlLabel value={similarWord} control={<Radio />} label={similarWord} onChange={e => onSelect(similarWord, "Similar", tab._id)}/>);
+      return tab.similar.map((similarWord, i) => {
+        return (<FormControlLabel value={similarWord} control={<Radio />} label={i+1 + '. ' + similarWord} onChange={e => onSelect(similarWord, "Similar", tab._id)}/>);
       });
     }
 
@@ -32,8 +32,8 @@ export default function RadioButtonsGroup(props) {
     if (tab.antonymous === undefined || tab.antonymous === "")
       return null
     else
-      return tab.antonymous.map((antonymousWord) => {
-        return (<FormControlLabel value={antonymousWord} control={<Radio />} label={antonymousWord} onChange={e => onSelect(antonymousWord, "Antonymous", tab._id)}/>);
+      return tab.antonymous.map((antonymousWord, i) => {
+        return (<FormControlLabel value={antonymousWord} control={<Radio />} label={i+1 + '. ' + antonymousWord} onChange={e => onSelect(antonymousWord, "Antonymous", tab._id)}/>);
       });
     }
 
@@ -41,14 +41,15 @@ export default function RadioButtonsGroup(props) {
     if (props.tabData === undefined || props.tabData === "" || props.tabData === null)
       return null
     else
-      return props.tabData.map((tab) => {
+      return props.tabData.map((tab, i) => {
         return (<RadioGroup>
+          <h3>Sekme {i+1}</h3>
+          <p>Eş Anlamlı:</p>
           {listThesaurusWords(tab)}
-          <p>-</p>
+          <p>Benzer:</p>
           {listSimilarWords(tab)}
-          <p>-</p>
+          <p>Zıt:</p>
           {listAntonymousWords(tab)}
-          <p>---</p>
         </RadioGroup>);
       });
     }

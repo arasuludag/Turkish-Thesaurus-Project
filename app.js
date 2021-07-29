@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
@@ -24,11 +23,11 @@ const port = 5000;
 let sitemap;
 
 app.use(
-  bodyParser.urlencoded({
+  express.urlencoded({
     extended: true,
   })
 );
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.use(cors());
 
