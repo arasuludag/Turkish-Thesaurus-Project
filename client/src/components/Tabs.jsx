@@ -81,19 +81,19 @@ export default function CustomizedTabs(props) {
     setValue(newValue);
   };
 
-  function ImportedThesaurusWords(index) {
-    if (props.tabData[index].thesaurus === undefined) return null;
+  function ImportedWords(index, title, backgroundColor, words) {
+    if (words === undefined) return null;
     else
-      return props.tabData[index].thesaurus.map((word) => {
+      return words.map((word) => {
         return (
           <Button
             key={word + index}
-            title="Eş Anlamlı Kelime"
+            title={title}
             variant="contained"
             style={{
               marginRight: "15px",
               marginBottom: "15px",
-              backgroundColor: "#7BC17E",
+              backgroundColor: backgroundColor,
               color: "white",
               borderRadius: "10px",
             }}
@@ -105,148 +105,24 @@ export default function CustomizedTabs(props) {
       });
   }
 
-  function ImportedGeneratedThesaurusWords(index) {
-    if (props.genWords.thesaurus === undefined || index !== 0) return null;
+  function ImportedGeneratedWords(index, title, backgroundColor, words, tabWords) {
+    if (words === undefined || index !== 0) return null;
     else
-      return props.genWords.thesaurus.map((word) => {
+      return words.map((word) => {
         var duplicate = false;
-        props.tabData[index].thesaurus.map((enteredWord) => {
-          if (enteredWord === word) {
-            duplicate = true;
-          }
-          return duplicate;
-        });
-        if (duplicate) return null;
+        for(var enteredWord of tabWords)
+        if (enteredWord === word) duplicate = true;
         else
           return (
             <Button
               key={word + index}
-              title="Eş Anlamlı Kelime (Bilgisayar Önerisi)
-              Uyarı: Doğruluğu tartışmalı olabilir."
+              title={title}
               variant="contained"
               style={{
                 boxShadow: "0 0 0 2pt white",
                 marginRight: "15px",
                 marginBottom: "15px",
-                backgroundColor: "#7BC17E",
-                color: "white",
-                borderRadius: "10px",
-              }}
-              onClick={() => handleSubmit(word)}
-            >
-              {word}
-            </Button>
-          );
-      });
-  }
-
-  function ImportedSimilarWords(index) {
-    if (props.tabData[index].similar === undefined) return null;
-    else
-      return props.tabData[index].similar.map((word) => {
-        return (
-          <Button
-            key={word + index}
-            title="Benzer Anlamlı Kelime"
-            variant="contained"
-            style={{
-              marginRight: "15px",
-              marginBottom: "15px",
-              backgroundColor: "#D0C212",
-              color: "white",
-              borderRadius: "10px",
-            }}
-            onClick={() => handleSubmit(word)}
-          >
-            {word}
-          </Button>
-        );
-      });
-  }
-
-  function ImportedGeneratedSimilarWords(index) {
-    if (props.genWords.similar === undefined || index !== 0) return null;
-    else
-      return props.genWords.similar.map((word) => {
-        var duplicate = false;
-        props.tabData[index].similar.map((enteredWord) => {
-          if (enteredWord === word) {
-            duplicate = true;
-          }
-          return duplicate;
-        });
-        if (duplicate) return null;
-        else
-          return (
-            <Button
-              key={word + index}
-              title="Benzer Anlamlı Kelime (Bilgisayar Önerisi)
-              Uyarı: Doğruluğu tartışmalı olabilir."
-              variant="contained"
-              style={{
-                boxShadow: "0 0 0 2pt white",
-                marginRight: "15px",
-                marginBottom: "15px",
-                backgroundColor: "#D0C212",
-                color: "white",
-                borderRadius: "10px",
-              }}
-              onClick={() => handleSubmit(word)}
-            >
-              {word}
-            </Button>
-          );
-      });
-  }
-
-  function ImportedAntonymousWords(index) {
-    if (props.tabData[index].antonymous === undefined) return null;
-    else
-      return props.tabData[index].antonymous.map((word) => {
-        return (
-          <Button
-            key={word + index}
-            title="Zıt Anlamlı Kelime"
-            variant="contained"
-            style={{
-              marginRight: "15px",
-              marginBottom: "15px",
-              backgroundColor: "#C93030",
-              color: "white",
-              borderRadius: "10px",
-            }}
-            onClick={() => handleSubmit(word)}
-          >
-            {word}
-          </Button>
-        );
-      });
-  }
-
-  function ImportedGeneratedAntonymousWords(index) {
-    if (props.genWords.antonymous === undefined || index !== 0) return null;
-    else
-      return props.genWords.antonymous.map((word) => {
-        var duplicate = false;
-        props.tabData[index].antonymous.map((enteredWord) => {
-          if (enteredWord === word) {
-            duplicate = true;
-          }
-          return duplicate;
-        });
-        if (duplicate) return null;
-        else
-          return (
-            <Button
-              key={word + index}
-              title="Zıt Anlamlı Kelime (Bilgisayar Önerisi)
-              Uyarı: Doğruluğu tartışmalı olabilir."
-              variant="contained"
-              style={{
-                boxShadow: "0 0 0 2pt white",
-                marginRight: "15px",
-                marginBottom: "15px",
-                backgroundColor: "#C93030",
+                backgroundColor: backgroundColor,
                 color: "white",
                 borderRadius: "10px",
               }}
@@ -268,12 +144,16 @@ export default function CustomizedTabs(props) {
     return props.tabData.map((tab, index) => {
       return (
         <TabPanel key={index} value={value} index={index}>
-          {ImportedThesaurusWords(index)}
-          {ImportedGeneratedThesaurusWords(index)}
-          {ImportedSimilarWords(index)}
-          {ImportedGeneratedSimilarWords(index)}
-          {ImportedAntonymousWords(index)}
-          {ImportedGeneratedAntonymousWords(index)}
+          {ImportedWords(index, `Eş Anlamlı Kelime`, `#7BC17E`, props.tabData[index].thesaurus)}
+          {ImportedGeneratedWords(index, `Eş Anlamlı Kelime (Bilgisayar Önerisi)
+              Uyarı: Doğruluğu tartışmalı olabilir.`, `#7BC17E`, props.genWords.thesaurus, props.tabData[index].thesaurus)}
+          {ImportedWords(index, `Benzer Anlamlı Kelime`, `#D0C212`, props.tabData[index].similar)}
+          {ImportedGeneratedWords(index, `Benzer Anlamlı Kelime (Bilgisayar Önerisi)
+              Uyarı: Doğruluğu tartışmalı olabili r.`, `#D0C212`, props.genWords.similar, props.tabData[index].similar)}
+          {ImportedWords(index, `Zıt Anlamlı Kelime`, `#C93030`, props.tabData[index].antonymous)}
+          {ImportedGeneratedWords(index, `Zıt Anlamlı Kelime (Bilgisayar Önerisi)
+              Uyarı: Doğruluğu tartışmalı olabilir.`, `#C93030`, props.genWords.antonymous, props.tabData[index].antonymous)}
+         
         </TabPanel>
       );
     });
