@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -10,30 +10,12 @@ export default function RadioButtonsGroup(props) {
     props.deleteThis(word, type, tabId);
   };
 
-  function listThesaurusWords(tab) {
-    if (tab.thesaurus === undefined || tab.thesaurus === "")
+  function Words(tabId, tabWords, type) {
+    if (tabWords === undefined || tabWords === "")
       return null;
     else
-      return tab.thesaurus.map((thesaurusWord, i) => {
-        return (<FormControlLabel value={thesaurusWord} control={<Radio />} label={i+1 + '. ' + thesaurusWord} onChange={e => onSelect(thesaurusWord, "Thesaurus", tab._id)}/>);
-      });
-    }
-
-  function listSimilarWords(tab) {
-    if (tab.similar === undefined || tab.similar === "")
-      return null;
-    else
-      return tab.similar.map((similarWord, i) => {
-        return (<FormControlLabel value={similarWord} control={<Radio />} label={i+1 + '. ' + similarWord} onChange={e => onSelect(similarWord, "Similar", tab._id)}/>);
-      });
-    }
-
-  function listAntonymousWords(tab) {
-    if (tab.antonymous === undefined || tab.antonymous === "")
-      return null
-    else
-      return tab.antonymous.map((antonymousWord, i) => {
-        return (<FormControlLabel value={antonymousWord} control={<Radio />} label={i+1 + '. ' + antonymousWord} onChange={e => onSelect(antonymousWord, "Antonymous", tab._id)}/>);
+      return tabWords.map((word, i) => {
+        return (<FormControlLabel value={word} control={<Radio />} label={`${i+1}. ${word}`} onChange={e => onSelect(word, type, tabId)}/>);
       });
     }
 
@@ -45,11 +27,11 @@ export default function RadioButtonsGroup(props) {
         return (<RadioGroup>
           <h3>Sekme {i+1}</h3>
           <p>Eş Anlamlı:</p>
-          {listThesaurusWords(tab)}
+          {Words(tab._id, tab.thesaurus, `Thesaurus`)}
           <p>Benzer:</p>
-          {listSimilarWords(tab)}
+          {Words(tab._id, tab.similar, `Similar`)}
           <p>Zıt:</p>
-          {listAntonymousWords(tab)}
+          {Words(tab._id, tab.antonymous, `Antonymous`)}
         </RadioGroup>);
       });
     }
