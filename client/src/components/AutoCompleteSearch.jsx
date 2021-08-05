@@ -55,20 +55,20 @@ const useStyles = makeStyles((theme) => ({
 export default function ComboBox(props) {
   const classes = useStyles();
 
-  const [word, setWord] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (event) => {
-    setWord(event.target.value);
+    const typedWord = event.target.value;
 
-    setSuggestions([]);
+    // setSuggestions([]);
 
-    if (word !== "" || (word !== undefined && word.length > 2)) {
+    if (typedWord !== undefined && typedWord.length > 0) {
       setLoading(true);
-      axios.post("/api/word-suggestions", { word: word }).then((res) => {
+      axios.post("/api/word-suggestions", { word: typedWord }).then((res) => {
         setSuggestions([...res.data]);
         setLoading(false);
+        console.log(res.data)
       });
     }
   };
@@ -94,8 +94,7 @@ export default function ComboBox(props) {
           type={props.type}
           label={props.label}
           variant="outlined"
-          onChange={props.onChange}
-          onInput={handleChange}
+          onChange={handleChange}
         />
       )}
     />

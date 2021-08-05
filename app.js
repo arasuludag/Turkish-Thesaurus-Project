@@ -147,7 +147,7 @@ app.post("/api/word", (req, res) => {
     });
 });
 
-app.post("/api/word-suggestions", (req, res) => {
+app.post("/api/word-suggestions", (req, res) => { console.log(req.body.word)
   Word.find({
     word: {
       $regex: req.body.word,
@@ -161,7 +161,7 @@ app.post("/api/word-suggestions", (req, res) => {
     else {
       res.send(foundWord);
     }
-  }).limit(7);
+  }).limit(20);
 });
 
 app.post("/api/tabs", (req, res) => {
