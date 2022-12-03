@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Turkish-Thesaurus-Project/static/css/main.9071bff3.css",
-    "main.js": "/Turkish-Thesaurus-Project/static/js/main.5c2f03f2.js",
+    "main.js": "/Turkish-Thesaurus-Project/static/js/main.e650d1a7.js",
     "static/js/787.2f6b42ad.chunk.js": "/Turkish-Thesaurus-Project/static/js/787.2f6b42ad.chunk.js",
     "index.html": "/Turkish-Thesaurus-Project/index.html",
     "main.9071bff3.css.map": "/Turkish-Thesaurus-Project/static/css/main.9071bff3.css.map",
-    "main.5c2f03f2.js.map": "/Turkish-Thesaurus-Project/static/js/main.5c2f03f2.js.map",
+    "main.e650d1a7.js.map": "/Turkish-Thesaurus-Project/static/js/main.e650d1a7.js.map",
     "787.2f6b42ad.chunk.js.map": "/Turkish-Thesaurus-Project/static/js/787.2f6b42ad.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9071bff3.css",
-    "static/js/main.5c2f03f2.js"
+    "static/js/main.e650d1a7.js"
   ]
 }
