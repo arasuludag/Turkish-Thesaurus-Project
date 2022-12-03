@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.9071bff3.css",
-    "main.js": "/static/js/main.36437495.js",
-    "static/js/787.2f6b42ad.chunk.js": "/static/js/787.2f6b42ad.chunk.js",
-    "index.html": "/index.html",
-    "main.9071bff3.css.map": "/static/css/main.9071bff3.css.map",
-    "main.36437495.js.map": "/static/js/main.36437495.js.map",
-    "787.2f6b42ad.chunk.js.map": "/static/js/787.2f6b42ad.chunk.js.map"
+    "main.css": "/Turkish-Thesaurus-Project/static/css/main.9071bff3.css",
+    "main.js": "/Turkish-Thesaurus-Project/static/js/main.b94faeb4.js",
+    "static/js/787.2f6b42ad.chunk.js": "/Turkish-Thesaurus-Project/static/js/787.2f6b42ad.chunk.js",
+    "index.html": "/Turkish-Thesaurus-Project/index.html",
+    "main.9071bff3.css.map": "/Turkish-Thesaurus-Project/static/css/main.9071bff3.css.map",
+    "main.b94faeb4.js.map": "/Turkish-Thesaurus-Project/static/js/main.b94faeb4.js.map",
+    "787.2f6b42ad.chunk.js.map": "/Turkish-Thesaurus-Project/static/js/787.2f6b42ad.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9071bff3.css",
-    "static/js/main.36437495.js"
+    "static/js/main.b94faeb4.js"
   ]
 }
