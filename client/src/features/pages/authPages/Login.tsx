@@ -13,7 +13,7 @@ function Login() {
     event.preventDefault();
 
     axios
-      .post("/api/login", { username: user.username, password: user.password })
+      .post("/api/login", user)
       .then((res) => {
         enqueueSnackbar("Girildi.", { variant: "success" });
         navigate("/");

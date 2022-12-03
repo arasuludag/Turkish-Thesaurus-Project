@@ -120,12 +120,7 @@ app.post("/api/register", (req, res) => {
   } else res.status(401).send();
 });
 
-app.post(
-  "/api/login",
-  passport.authenticate("local", {
-    successRedirect: "/",
-  })
-);
+app.post("/api/login", passport.authenticate("local"));
 
 app.get("/api/word/:word", async (req, res) => {
   const foundWord = await Word.findOne(
