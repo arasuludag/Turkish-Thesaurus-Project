@@ -492,16 +492,6 @@ app.get("/sitemap.xml", async function (req, res) {
   }
 });
 
-if (process.env.NODE_ENV === "production") {
-  // If we're on production, not developement.
-  app.use(express.static("client/build")); // Look for a path inside this.
-
-  const path = require("path");
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-  });
-}
-
 app.listen(process.env.PORT || port, () => {
   console.log(`Example app listening on port ${port}!`);
 });

@@ -9,32 +9,34 @@ function ShowSampleUsage() {
   const [usage, setUsage] = useState([]);
 
   useEffect(() => {
-    axios.get("/api/sample_usage/" + searchResult.word).then((res) => {
-      setUsage(res.data);
-    });
+    if (searchResult.word)
+      axios.get("/api/sample_usage/" + searchResult.word).then((res) => {
+        setUsage(res.data);
+      });
   }, [searchResult.word]);
 
   function List() {
-    return usage.map(
-      (sample: { Soz: string; Tip: string; Anlam: string }, index) => {
-        return (
-          <Card key={index}>
-            <CardContent>
-              <Typography
-                title={"Otomatik oluşturulmuştur. \n Yanlışlıklar olabilir."}
-              >
-                {sample.Soz}
-              </Typography>
-              <Typography variant="caption">
-                <i>{sample.Tip}</i>
-              </Typography>
+    if (usage)
+      return usage.map(
+        (sample: { Soz: string; Tip: string; Anlam: string }, index) => {
+          return (
+            <Card key={index}>
+              <CardContent>
+                <Typography
+                  title={"Otomatik oluşturulmuştur. \n Yanlışlıklar olabilir."}
+                >
+                  {sample.Soz}
+                </Typography>
+                <Typography variant="caption">
+                  <i>{sample.Tip}</i>
+                </Typography>
 
-              <Typography variant="body2">{sample.Anlam}</Typography>
-            </CardContent>
-          </Card>
-        );
-      }
-    );
+                <Typography variant="body2">{sample.Anlam}</Typography>
+              </CardContent>
+            </Card>
+          );
+        }
+      );
   }
 
   return <Stack spacing={2}>{List()}</Stack>;

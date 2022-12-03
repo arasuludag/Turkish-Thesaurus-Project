@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 import PropTypes from "prop-types";
-import { Box, Button, styled, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Button, Tab, Tabs, Typography } from "@mui/material";
 import { userOnTab, WordSearchResults } from "../search/wordSlice";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../app/hooks";
@@ -10,16 +10,6 @@ interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
-}
-
-interface StyledTabsProps {
-  children?: React.ReactNode;
-  value: number;
-  onChange: (event: React.SyntheticEvent, newValue: number) => void;
-}
-
-interface StyledTabProps {
-  label: string;
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -47,40 +37,6 @@ TabPanel.propTypes = {
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
 };
-
-const StyledTabs = styled((props: StyledTabsProps) => (
-  <Tabs
-    {...props}
-    TabIndicatorProps={{ children: <span className="MuiTabs-indicatorSpan" /> }}
-  />
-))({
-  "& .MuiTabs-indicator": {
-    display: "flex",
-    justifyContent: "center",
-    backgroundColor: "transparent",
-  },
-  "& .MuiTabs-indicatorSpan": {
-    maxWidth: 40,
-    width: "100%",
-    backgroundColor: "#635ee7",
-  },
-});
-
-const StyledTab = styled((props: StyledTabProps) => (
-  <Tab disableRipple {...props} />
-))(({ theme }) => ({
-  textTransform: "none",
-  fontWeight: theme.typography.fontWeightRegular,
-  fontSize: theme.typography.pxToRem(15),
-  marginRight: theme.spacing(1),
-  color: "rgba(255, 255, 255, 0.7)",
-  "&.Mui-selected": {
-    color: "#fff",
-  },
-  "&.Mui-focusVisible": {
-    backgroundColor: "rgba(100, 95, 228, 0.32)",
-  },
-}));
 
 export default function CustomizedTabs(props: {
   searchResult: WordSearchResults;
@@ -198,7 +154,7 @@ export default function CustomizedTabs(props: {
       var label;
       if (tab.clause) label = `(${tab.clause}) ${tab.name}`;
       else label = tab.name;
-      return <StyledTab key={index} label={label} />;
+      return <Tab key={index} label={label} />;
     });
   }
 
@@ -207,9 +163,9 @@ export default function CustomizedTabs(props: {
     else
       return (
         <div>
-          <StyledTabs value={value} onChange={handleChange}>
+          <Tabs value={value} onChange={handleChange}>
             {TabsThemselves()}
-          </StyledTabs>
+          </Tabs>
           {Words()}
         </div>
       );

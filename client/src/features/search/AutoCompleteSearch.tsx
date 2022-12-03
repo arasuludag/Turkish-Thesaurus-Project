@@ -37,7 +37,7 @@ export default function ComboBox(props: {
       autoComplete
       autoHighlight
       loading={loading}
-      loadingText={"Bekle biraz..."}
+      loadingText={"Yükleniyor..."}
       renderInput={(params) => (
         <TextField
           {...params}

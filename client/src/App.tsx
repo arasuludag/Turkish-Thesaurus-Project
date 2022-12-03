@@ -37,10 +37,8 @@ function App() {
           <Search />
 
           <Routes>
-            <Route path="/ara/:word">
-              <Route index element={<SearchResults />} />
-            </Route>
-
+            <Route path="/" />
+            <Route path="/ara/:word" element={<SearchResults />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/Register" element={<Register />} />
           </Routes>
