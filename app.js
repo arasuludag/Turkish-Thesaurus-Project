@@ -120,7 +120,15 @@ app.post("/api/register", (req, res) => {
   } else res.status(401).send();
 });
 
-app.post("/api/login", passport.authenticate("local"));
+app.post(
+  "/api/login",
+  passport.authenticate("local", {
+    failureMessage: true,
+  }),
+  function (req, res) {
+    res.status(200).send();
+  }
+);
 
 app.get("/api/word/:word", async (req, res) => {
   const foundWord = await Word.findOne(
