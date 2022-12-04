@@ -7,13 +7,8 @@ import reportWebVitals from "./reportWebVitals";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 
-// if (process.env.NODE_ENV !== "development")
-//   axios.defaults.baseURL = "https://tresaurus.onrender.com";
-
 const container = document.getElementById("root")!;
 const root = createRoot(container);
-
-// I'll switch back to BrowserRouter after I find a proper hosting solution.
 
 root.render(
   <React.StrictMode>
