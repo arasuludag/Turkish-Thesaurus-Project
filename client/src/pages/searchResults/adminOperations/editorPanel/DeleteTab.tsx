@@ -11,8 +11,8 @@ import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import {
   selectWordResults,
   triggerChangeFlag,
-} from "../../../search/wordSlice";
-import ToggleButtons from "../../../components/ToggleButtons";
+} from "../../../../slices/wordSlice";
+import ToggleButtons from "../../../../components/ToggleButtons";
 
 function FormDialog() {
   const dispatch = useAppDispatch();
@@ -37,9 +37,11 @@ function FormDialog() {
       });
   };
 
+  if (!searchResult.created) return null;
+
   return (
     <div>
-      <Button variant="contained" size="small" onClick={handleClickOpen}>
+      <Button variant="text" size="small" onClick={handleClickOpen}>
         Sekme Sil
       </Button>
       <Dialog

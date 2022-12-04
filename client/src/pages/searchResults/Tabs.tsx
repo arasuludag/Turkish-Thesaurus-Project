@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";
-
 import PropTypes from "prop-types";
 import { Box, Button, Tab, Tabs, Typography } from "@mui/material";
-import { userOnTab, WordSearchResults } from "../search/wordSlice";
+import {
+  selectCurrentTabIndex,
+  userOnTab,
+  WordSearchResults,
+} from "../../slices/wordSlice";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -41,15 +43,11 @@ TabPanel.propTypes = {
 export default function CustomizedTabs(props: {
   searchResult: WordSearchResults;
 }) {
-  const [value, setValue] = React.useState(0);
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(userOnTab({ index: value }));
-  }, [dispatch, value]);
+  const tabIndex = useAppSelector(selectCurrentTabIndex);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+    dispatch(userOnTab({ index: newValue }));
   };
 
   function ImportedWords(
@@ -66,7 +64,7 @@ export default function CustomizedTabs(props: {
             key={word + index}
             title={title}
             variant="contained"
-            style={{
+            sx={{
               marginRight: "15px",
               marginBottom: "15px",
               backgroundColor: backgroundColor,
@@ -115,7 +113,7 @@ export default function CustomizedTabs(props: {
 
   const navigate = useNavigate();
   const handleSubmit = (word: string) => {
-    setValue(0);
+    dispatch(userOnTab({ index: 0 }));
     const path = "/ara/" + word;
     navigate(path);
   };
@@ -123,7 +121,7 @@ export default function CustomizedTabs(props: {
   function Words() {
     return props.searchResult.tabs.map((tab, index) => {
       return (
-        <TabPanel key={index} value={value} index={index}>
+        <TabPanel key={index} value={tabIndex} index={index}>
           {ImportedWords(
             index,
             `Eş Anlamlı Kelime`,
@@ -163,7 +161,7 @@ export default function CustomizedTabs(props: {
     else
       return (
         <div>
-          <Tabs value={value} onChange={handleChange}>
+          <Tabs value={tabIndex} onChange={handleChange}>
             {TabsThemselves()}
           </Tabs>
           {Words()}

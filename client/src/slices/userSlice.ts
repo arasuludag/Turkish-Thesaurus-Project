@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { RootState } from "../../../app/store";
+import { RootState } from "../app/store";
 
 export interface UserObject {
   name: string;
@@ -11,18 +11,27 @@ export interface UserObject {
 const initialState: {
   user: UserObject | "";
   status: "idle" | "loading" | "failed";
+  settings: { isDark: boolean };
 } = {
   user: "",
   status: "idle",
+  settings: {
+    isDark:
+      localStorage.getItem("isDark") === null
+        ? true
+        : localStorage.getItem("isDark") === "true",
+  },
 };
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    // increment: (state) => {
-    //   state.value += 1;
-    // },
+    setTheme: (state, action: PayloadAction<boolean>) => {
+      state.settings = { isDark: action.payload };
+
+      localStorage.setItem("isDark", state.settings.isDark.toString());
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -46,8 +55,9 @@ export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
   });
 });
 
-// export const {} = userSlice.actions;
+export const { setTheme } = userSlice.actions;
 
 export const selectCurrentUser = (state: RootState) => state.user.user;
+export const selectTheme = (state: RootState) => state.user.settings.isDark;
 
 export default userSlice.reducer;

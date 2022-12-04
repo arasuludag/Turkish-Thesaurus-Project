@@ -1,6 +1,6 @@
 import { Card, CardContent, Stack } from "@mui/material";
 import { useAppSelector } from "../../../../app/hooks";
-import { selectCurrentUser } from "../../../pages/authPages/userSlice";
+import { selectCurrentUser } from "../../../../slices/userSlice";
 import AddTab from "./AddTab";
 import AddWordToWord from "./AddWordToWord";
 import DeleteTab from "./DeleteTab";

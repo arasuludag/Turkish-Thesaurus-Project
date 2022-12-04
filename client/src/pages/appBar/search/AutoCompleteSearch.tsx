@@ -45,6 +45,7 @@ export default function ComboBox(props: {
           type="text"
           label="Kelime Ara"
           variant="outlined"
+          size="small"
           onChange={(event) => handleChange(event)}
         />
       )}

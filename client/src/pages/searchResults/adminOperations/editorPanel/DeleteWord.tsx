@@ -8,8 +8,11 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
-import { selectCurrentTab, triggerChangeFlag } from "../../../search/wordSlice";
-import ToggleButtons from "../../../components/ToggleButtons";
+import {
+  selectCurrentTab,
+  triggerChangeFlag,
+} from "../../../../slices/wordSlice";
+import ToggleButtons from "../../../../components/ToggleButtons";
 
 function FormDialog() {
   const dispatch = useAppDispatch();
@@ -38,9 +41,11 @@ function FormDialog() {
         });
   };
 
+  if (!currentTab) return null;
+
   return (
     <div>
-      <Button variant="contained" size="small" onClick={handleClickOpen}>
+      <Button variant="text" size="small" onClick={handleClickOpen}>
         Kelime Sil
       </Button>
       <Dialog

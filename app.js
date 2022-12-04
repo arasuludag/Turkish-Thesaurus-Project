@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
+const { body, validationResult } = require("express-validator");
 
 const { SitemapStream, streamToPromise } = require("sitemap");
 const { createGzip } = require("zlib");
@@ -164,8 +165,13 @@ app.get("/api/word-suggestions/:word", (req, res) => {
   ).limit(20);
 });
 
-app.post("/api/add-word", (req, res) => {
+app.post("/api/add-word", body("word").not().isEmpty(), (req, res) => {
   if (!req.user?.isEditor) return res.status(401).send();
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
 
   Tab.create(
     {
@@ -196,12 +202,19 @@ app.post("/api/add-word", (req, res) => {
   );
 });
 
-app.post("/api/add-word-to-word", (req, res) => {
+app.post("/api/add-word-to-word", body("word").not().isEmpty(), (req, res) => {
   if (!req.user?.isEditor) return res.status(401).send();
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
 
   Tab.findById(req.body.tab, function (err, tab) {
     if (err) console.log(err);
     else {
+      if (!tab) return res.status(400).send();
+
       if (req.body.relation === "thesaurus") tab.thesaurus.push(req.body.word);
       if (req.body.relation === "similar") tab.similar.push(req.body.word);
       if (req.body.relation === "antonymous")
@@ -213,7 +226,7 @@ app.post("/api/add-word-to-word", (req, res) => {
   });
 });
 
-app.post("/api/change-word-order", (req, res) => {
+app.patch("/api/change-word-order", (req, res) => {
   if (!req.user?.isEditor) return res.status(401).send();
 
   Tab.findById(req.body.changedWord.tab, function (err, tab) {
@@ -252,6 +265,8 @@ app.post("/api/add-tab", (req, res) => {
   Word.findById(req.body.wordId, function (err, foundWord) {
     if (err) console.log(err);
     else {
+      if (!foundWord) return res.status(400).send();
+
       Tab.create(
         {
           name: req.body.tabName,
@@ -278,6 +293,8 @@ app.delete("/api/wordFromTab/:tabID/:word", (req, res) => {
   Tab.findById(req.params.tabID, function (err, tab) {
     if (err) console.log(err);
     else {
+      if (!tab) return res.status(400).send();
+
       for (var i = 0; i < tab.thesaurus.length; i++) {
         if (tab.thesaurus[i] === req.params.word) {
           tab.thesaurus.splice(i, 1);
@@ -320,8 +337,9 @@ app.delete("/api/searchable_word/:word", (req, res) => {
     },
     function (err, foundWord) {
       if (err) console.log(err);
-      if (foundWord === null) res.status(404);
       else {
+        if (!foundWord) return res.status(400).send();
+
         const query = foundWord.tabs.map(async (tab) => {
           deleteTab = await Tab.findByIdAndDelete(tab._id).exec();
         });
@@ -348,7 +366,8 @@ app.patch("/api/makeEditor", (req, res) => {
     function (err, foundUser) {
       if (err) console.log(err);
       else {
-        res.status(204).send();
+        if (foundUser) return res.status(204).send();
+        else return res.status(404).send();
       }
     }
   );

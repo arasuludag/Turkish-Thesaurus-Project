@@ -4,12 +4,13 @@ import {
   fetchWord,
   selectChangeFlag,
   selectWordResults,
-} from "../search/wordSlice";
+  userOnTab,
+} from "../../slices/wordSlice";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import Tabs from "./Tabs";
 import AddWord from "./adminOperations/AddWord";
-import { fetchUser } from "../pages/authPages/userSlice";
+import { fetchUser } from "../../slices/userSlice";
 import EditorPanel from "./adminOperations/editorPanel/EditorPanel";
 import ShowSampleUsage from "./ShowSampleUsage";
 
@@ -27,6 +28,11 @@ function SearchResult() {
     if (word) dispatch(fetchWord(word));
     document.title = word || "TResaurus";
   }, [dispatch, word, triggerChangeFlag]);
+
+  // When new word arrives, set tab to initial one.
+  useEffect(() => {
+    dispatch(userOnTab({ index: 0 }));
+  }, [dispatch, word]);
 
   function checkData() {
     if (!searchResult.word) return null;

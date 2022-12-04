@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAppSelector } from "../../app/hooks";
-import { selectWordResults } from "../search/wordSlice";
+import { selectWordResults } from "../../slices/wordSlice";
 import { Card, CardContent, Stack, Typography } from "@mui/material";
 
 function ShowSampleUsage() {

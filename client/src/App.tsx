@@ -2,11 +2,13 @@ import { CssBaseline, Stack } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { SnackbarProvider } from "notistack";
 import { Routes, Route } from "react-router-dom";
-import "./App.css";
-import Login from "./features/pages/authPages/Login";
-import Register from "./features/pages/authPages/Register";
-import Search from "./features/search/Search";
-import SearchResults from "./features/searchResults/SearchResults";
+import Login from "./pages/authPages/Login";
+import Register from "./pages/authPages/Register";
+import Footer from "./pages/footer/Footer";
+import SearchResults from "./pages/searchResults/SearchResults";
+import AppBar from "./pages/appBar/AppBar";
+import { useAppSelector } from "./app/hooks";
+import { selectTheme } from "./slices/userSlice";
 
 const darkTheme = createTheme({
   palette: {
@@ -22,26 +24,43 @@ const darkTheme = createTheme({
   },
 });
 
+const lightTheme = createTheme({
+  palette: {
+    mode: "light",
+    primary: {
+      main: "#FFBF00",
+    },
+  },
+  typography: {
+    button: {
+      textTransform: "none",
+    },
+  },
+});
+
 function App() {
+  const theme = useAppSelector(selectTheme);
+
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={theme ? darkTheme : lightTheme}>
       <SnackbarProvider>
         <CssBaseline />
+        <AppBar />
         <Stack
           direction="column"
           justifyContent="flex-start"
           alignItems="center"
           spacing={2}
-          sx={{ marginX: 1 }}
+          sx={{ margin: 2 }}
         >
-          <Search />
-
           <Routes>
             <Route path="/" />
             <Route path="/ara/:word" element={<SearchResults />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/Register" element={<Register />} />
           </Routes>
+
+          <Footer />
         </Stack>
       </SnackbarProvider>
     </ThemeProvider>

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { RootState } from "../../app/store";
-import { TabObject } from "../../global/types";
+import { RootState } from "../app/store";
+import { TabObject } from "../global/types";
 
 export interface WordSearchResults {
   wordID: string;
@@ -84,5 +84,7 @@ export const selectWordResults = (state: RootState) => state.word.results;
 export const selectCurrentTab = (state: RootState) =>
   state.word.results.tabs[state.word.currentTabIndex];
 export const selectChangeFlag = (state: RootState) => state.word.changeFlag;
+export const selectCurrentTabIndex = (state: RootState) =>
+  state.word.currentTabIndex;
 
 export default wordSlice.reducer;

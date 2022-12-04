@@ -1,6 +1,6 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import wordReducer from "../features/search/wordSlice";
-import userReducer from "../features/pages/authPages/userSlice";
+import wordReducer from "../slices/wordSlice";
+import userReducer from "../slices/userSlice";
 
 export const store = configureStore({
   reducer: {

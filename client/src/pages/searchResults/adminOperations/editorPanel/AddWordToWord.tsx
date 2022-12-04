@@ -9,9 +9,12 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import ToggleButtons from "../../../components/ToggleButtons";
+import ToggleButtons from "../../../../components/ToggleButtons";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
-import { selectCurrentTab, triggerChangeFlag } from "../../../search/wordSlice";
+import {
+  selectCurrentTab,
+  triggerChangeFlag,
+} from "../../../../slices/wordSlice";
 
 function FormDialog() {
   const dispatch = useAppDispatch();
@@ -49,9 +52,11 @@ function FormDialog() {
     setWord(event.target.value);
   };
 
+  if (!currentTab) return null;
+
   return (
     <div>
-      <Button variant="contained" size="small" onClick={handleClickOpen}>
+      <Button variant="text" size="small" onClick={handleClickOpen}>
         Kelime Ekle
       </Button>
       <Dialog

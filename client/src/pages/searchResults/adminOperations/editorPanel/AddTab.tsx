@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import {
   selectWordResults,
   triggerChangeFlag,
-} from "../../../search/wordSlice";
+} from "../../../../slices/wordSlice";
 
 function FormDialog() {
   const dispatch = useAppDispatch();
@@ -51,9 +51,11 @@ function FormDialog() {
     setTabClause(event.target.value);
   };
 
+  if (!word.created) return null;
+
   return (
     <div>
-      <Button variant="contained" size="small" onClick={handleClickOpen}>
+      <Button variant="text" size="small" onClick={handleClickOpen}>
         Sekme Ekle
       </Button>
       <Dialog open={open} onClose={handleClose}>

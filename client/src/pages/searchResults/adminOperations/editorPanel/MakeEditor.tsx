@@ -8,8 +8,10 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
+import { useSnackbar } from "notistack";
 
 function FormDialog() {
+  const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = React.useState(false);
   const [email, setEmail] = useState("");
 
@@ -24,7 +26,15 @@ function FormDialog() {
   const handleSubmit = (event: any) => {
     event.preventDefault();
 
-    axios.patch("/api/makeEditor", { email: email }).then((res) => {});
+    axios
+      .patch("/api/makeEditor", { email: email })
+      .then((res) => {
+        enqueueSnackbar(`${email} editör yapıldı.`, { variant: "success" });
+      })
+      .catch((error) => {
+        if (error.response.status === 404)
+          enqueueSnackbar(`${email} diye biri yok.`, { variant: "error" });
+      });
   };
 
   const handleEmailChange = (event: any) => {
@@ -33,7 +43,7 @@ function FormDialog() {
 
   return (
     <div>
-      <Button variant="contained" size="small" onClick={handleClickOpen}>
+      <Button variant="text" size="small" onClick={handleClickOpen}>
         Editör Ata
       </Button>
       <Dialog open={open} onClose={handleClose}>

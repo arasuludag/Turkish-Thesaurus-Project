@@ -2,8 +2,11 @@ import React from "react";
 import axios from "axios";
 import { Button } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { selectCurrentUser } from "../../pages/authPages/userSlice";
-import { selectWordResults, triggerChangeFlag } from "../../search/wordSlice";
+import { selectCurrentUser } from "../../../slices/userSlice";
+import {
+  selectWordResults,
+  triggerChangeFlag,
+} from "../../../slices/wordSlice";
 
 function AddWord() {
   const currentUser = useAppSelector(selectCurrentUser);
