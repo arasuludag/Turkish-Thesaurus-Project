@@ -8,8 +8,8 @@ import "./index.css";
 import { HashRouter } from "react-router-dom";
 import axios from "axios";
 
-if (process.env.NODE_ENV !== "development")
-  axios.defaults.baseURL = "https://tresaurus.onrender.com";
+// if (process.env.NODE_ENV !== "development")
+//   axios.defaults.baseURL = "https://tresaurus.onrender.com";
 
 const container = document.getElementById("root")!;
 const root = createRoot(container);
