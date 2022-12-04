@@ -5,8 +5,7 @@ import { store } from "./app/store";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "./index.css";
-import { HashRouter } from "react-router-dom";
-import axios from "axios";
+import { BrowserRouter } from "react-router-dom";
 
 // if (process.env.NODE_ENV !== "development")
 //   axios.defaults.baseURL = "https://tresaurus.onrender.com";
@@ -19,9 +18,9 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <HashRouter>
+      <BrowserRouter>
         <App />
-      </HashRouter>
+      </BrowserRouter>
     </Provider>
   </React.StrictMode>
 );
