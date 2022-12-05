@@ -226,38 +226,41 @@ app.post("/api/add-word-to-word", body("word").not().isEmpty(), (req, res) => {
   });
 });
 
-app.patch("/api/change-word-order", (req, res) => {
-  if (!req.user?.isEditor) return res.status(401).send();
+app.patch(
+  "/api/tab",
+  body("tabID").not().isEmpty(),
+  body("newTab").not().isEmpty(),
+  (req, res) => {
+    if (!req.user?.isEditor) return res.status(401).send();
 
-  Tab.findById(req.body.changedWord.tab, function (err, tab) {
-    if (err) console.log(err);
-    else {
-      Array.prototype.move = function (from, to) {
-        this.splice(to, 0, this.splice(from, 1)[0]);
-      };
-
-      switch (req.body.changedWord.type) {
-        case "Thesaurus":
-          thesaurusOrder = tab.thesaurus.indexOf(req.body.changedWord.word);
-          tab.thesaurus.move(thesaurusOrder, req.body.changedWord.order - 1);
-          break;
-        case "Similar":
-          similarOrder = tab.similar.indexOf(req.body.changedWord.word);
-          tab.similar.move(similarOrder, req.body.changedWord.order - 1);
-          break;
-        case "Antonymous":
-          antonymousOrder = tab.antonymous.indexOf(req.body.changedWord.word);
-          tab.antonymous.move(antonymousOrder, req.body.changedWord.order - 1);
-          break;
-        default:
-          return res.status(400).send();
+    Tab.findByIdAndUpdate(req.body.tabID, req.body.newTab, function (err, tab) {
+      if (err) console.log(err);
+      else {
+        return res.status(200).send("OK");
       }
+    });
+  }
+);
 
-      tab.save();
-      res.status(200).send("OK");
-    }
-  });
-});
+app.patch(
+  "/api/word",
+  body("wordID").not().isEmpty(),
+  body("wordUpdate").not().isEmpty(),
+  (req, res) => {
+    if (!req.user?.isEditor) return res.status(401).send();
+
+    Word.findByIdAndUpdate(
+      req.body.wordID,
+      req.body.wordUpdate,
+      function (err, foundWord) {
+        if (err) console.log(err);
+        else {
+          return res.status(200).send();
+        }
+      }
+    );
+  }
+);
 
 app.post("/api/add-tab", (req, res) => {
   if (!req.user?.isEditor) return res.status(401).send();

@@ -6,9 +6,7 @@ export default function ToggleButtons(props: {
   options: { name: string; id?: string }[];
   onChange(option: string | null): void;
 }) {
-  const [option, setOption] = React.useState<string | null>(
-    props.options[0].id || null
-  );
+  const [option, setOption] = React.useState<string | null>(null);
 
   const handleChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -21,7 +19,10 @@ export default function ToggleButtons(props: {
   const displayOptions = () => {
     return props.options.map((option, index) => {
       return (
-        <ToggleButton value={option.id || option.name} key={index}>
+        <ToggleButton
+          value={option.id || option.name}
+          key={option.name + index}
+        >
           {option.name}
         </ToggleButton>
       );
@@ -29,12 +30,7 @@ export default function ToggleButtons(props: {
   };
 
   return (
-    <ToggleButtonGroup
-      value={option}
-      exclusive
-      onChange={handleChange}
-      aria-label="text alignment"
-    >
+    <ToggleButtonGroup value={option} exclusive onChange={handleChange}>
       {displayOptions()}
     </ToggleButtonGroup>
   );

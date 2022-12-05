@@ -1,8 +1,10 @@
-import { Card, CardContent, Stack } from "@mui/material";
+import { Card, CardContent, Grid } from "@mui/material";
 import { useAppSelector } from "../../../../app/hooks";
 import { selectCurrentUser } from "../../../../slices/userSlice";
 import AddTab from "./AddTab";
 import AddWordToWord from "./AddWordToWord";
+import ChangeTabOrder from "./ChangeTabOrder";
+import ChangeWordOrder from "./ChangeWordOrder";
 import DeleteTab from "./DeleteTab";
 import DeleteWord from "./DeleteWord";
 import MakeEditor from "./MakeEditor";
@@ -15,13 +17,20 @@ function EditorPanel() {
     return (
       <Card>
         <CardContent>
-          <Stack direction="row" spacing={1}>
+          <Grid
+            container
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <AddWordToWord />
             <AddTab />
             <DeleteWord />
             <DeleteTab />
+            <ChangeWordOrder />
+            <ChangeTabOrder />
             <MakeEditor />
-          </Stack>
+          </Grid>
         </CardContent>
       </Card>
     );

@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Box, Button, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Chip, Tab, Tabs } from "@mui/material";
 import {
   selectCurrentTabIndex,
   userOnTab,
@@ -25,11 +25,7 @@ function TabPanel(props: TabPanelProps) {
       aria-labelledby={`scrollable-auto-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box p={3}>{children}</Box>}
     </div>
   );
 }
@@ -58,23 +54,20 @@ export default function CustomizedTabs(props: {
   ) {
     if (words === undefined) return null;
     else
-      return words.map((word) => {
+      return words.map((word, wordIndex) => {
         return (
-          <Button
-            key={word + index}
+          <Chip
+            key={word + index + wordIndex}
             title={title}
-            variant="contained"
+            label={word}
             sx={{
               marginRight: "15px",
               marginBottom: "15px",
               backgroundColor: backgroundColor,
               color: "white",
-              borderRadius: "10px",
             }}
             onClick={() => handleSubmit(word)}
-          >
-            {word}
-          </Button>
+          />
         );
       });
   }
