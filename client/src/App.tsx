@@ -1,4 +1,4 @@
-import { CssBaseline, Stack } from "@mui/material";
+import { Box, CssBaseline, Stack } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { SnackbarProvider } from "notistack";
 import { Routes, Route } from "react-router-dom";
@@ -30,6 +30,9 @@ const lightTheme = createTheme({
     primary: {
       main: "#FFBF00",
     },
+    background: {
+      default: "#E9EAEC",
+    },
   },
   typography: {
     button: {
@@ -54,7 +57,7 @@ function App() {
           sx={{ margin: 2 }}
         >
           <Routes>
-            <Route path="/" />
+            <Route path="/" element={<Box sx={{ minHeight: "85vh" }}></Box>} />
             <Route path="/ara/:word" element={<SearchResults />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/Register" element={<Register />} />

@@ -1,4 +1,4 @@
-import { Card, CardContent, Stack, Typography } from "@mui/material";
+import { Card, CardContent, Skeleton, Stack, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   fetchWord,
@@ -35,7 +35,13 @@ function SearchResult() {
   }, [dispatch, word]);
 
   function checkData() {
-    if (!searchResult.word) return null;
+    if (!searchResult.word)
+      return (
+        <Card>
+          <Skeleton width={120} height={100} sx={{ margin: "0 auto" }} />
+          <Skeleton height={200} width={750} sx={{ margin: "0 auto" }} />
+        </Card>
+      );
     else if (!searchResult.created)
       return (
         <Card>
